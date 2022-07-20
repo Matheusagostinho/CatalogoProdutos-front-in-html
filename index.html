@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+    <link href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css" rel="stylesheet"  crossorigin="anonymous">
+
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+            
+
+    <title>SISTEMA PARA CATALOGOS DE PRODUTOS</title>
+
+    <link href="index.css" rel="stylesheet">
+  </head>
+  <body>
+    <nav>
+      <div class="nav-wrapper">
+        <a href="#" class="brand-logo">CATALOGO</a>
+        <ul id="nav-mobile" class="right hide-on-med-and-down">
+          <li><a href="index.html">Usuários</a></li>
+          <li><a href="categorias.html">Categorias</a></li>
+          <li><a href="produtos.html">Produtos</a></li>
+        </ul>
+      </div>
+    </nav>
+          
+    <div class="container">
+      <div class="d-flex bd-highlight mb-3">
+        <div class="me-auto p-2 bd-highlight"><h2>Usuários</div>
+        <div class="p-2 bd-highlight">
+          <button type="button" class="btn btn-secondary" onclick="showUserCreateBox()">Criar</button>
+        </div>
+      </div>
+      
+      <div class="table-responsive">
+        <table  class="table">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Nome</th>
+              <th scope="col">Telefone</th>
+              <th scope="col">Endereço</th>
+              <th scope="col">Email</th>
+              <th scope="col">Senha</th>
+              <th scope="col">Tipo</th>
+              <th scope="col">Ação</th>
+            </tr>
+          </thead>
+          <tbody id="mytable">
+            <tr>
+              <th scope="row" colspan="5">Loading...</th>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <script src="index.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.16/dist/sweetalert2.all.min.js"></script>
+  </body>
+</html>
+
+
+
+
+
+<script>
+  $(document).ready( function () {
+    $('table').DataTable();
+} );
+</script>
+
+<script>
+  function mascaraTelefone(event) {
+      let tecla = event.key;
+      let telefone = event.target.value.replace(/\D+/g, "");
+
+      if (/^[0-9]$/i.test(tecla)) {
+          telefone = telefone + tecla;
+          let tamanho = telefone.length;
+
+          if (tamanho >= 12) {
+              return false;
+          }
+          
+          if (tamanho > 10) {
+              telefone = telefone.replace(/^(\d\d)(\d{5})(\d{4}).*/, "($1) $2-$3");
+          } else if (tamanho > 5) {
+              telefone = telefone.replace(/^(\d\d)(\d{4})(\d{0,4}).*/, "($1) $2-$3");
+          } else if (tamanho > 2) {
+              telefone = telefone.replace(/^(\d\d)(\d{0,5})/, "($1) $2");
+          } else {
+              telefone = telefone.replace(/^(\d*)/, "($1");
+          }
+
+          event.target.value = telefone;
+      }
+
+      if (!["Backspace", "Delete"].includes(tecla)) {
+          return false;
+      }
+  }
+</script>
