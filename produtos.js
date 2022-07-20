@@ -13,7 +13,6 @@ function loadTable() {
 		  trHTML += '<td>'+object['nome']+'</td>';
 		  trHTML += '<td>'+object['preco']+'</td>';
 		  trHTML += '<td>'+object['descricao']+'</td>';
-		 
 		  trHTML += '<td>'+object['url_imagem']+'</td>';
 		  trHTML += '<td>'+object['categoria'].nome+'</td>';
 
@@ -25,12 +24,43 @@ function loadTable() {
 	  }
 	};
   }
+
+  function loadCategorias() {
+	const xhttp = new XMLHttpRequest();
+	xhttp.open("GET", "https://localhost:7092/categorias");
+	xhttp.send();
+	xhttp.onreadystatechange = function() {
+	  if (this.readyState == 4 && this.status == 200) {
+		console.log(this.responseText);
+		var trHTML = '<select  style="display:block !important"  required   id="categoriaId" name="categoriaId">';
+		trHTML += '<option value="">Escolha umca categoria</option>';
+		const objects = JSON.parse(this.responseText);
+		for (let object of objects) {
+		  trHTML += '<option value="'+object['id']+'">'+object['nome']+'</option>';
+		}
+		trHTML += "</select>";
+		document.getElementById("categoria_div").innerHTML = trHTML;
+	  }else{
+
+		var trHTML = '<select   style="display:block !important"  id="categoriaId" name="categoriaId">'; 
+	
+		 
+		trHTML += "</select>";
+
+		document.getElementById("categoria_div").innerHTML = trHTML;
+		
+	  }
+	};
+  }
+
+  
   
   loadTable();
 
 
 
   function showProdutoCreateBox() {
+	loadCategorias();
 	Swal.fire({
 	  title: 'Criar Produto',
 	  html:
@@ -39,7 +69,7 @@ function loadTable() {
 		'<input id="preco" type="number" class="validate" placeholder="Preço">' +
 		'<input id="descricao" class="validate" placeholder="Descrição">' +
 		'<input id="url_imagem" class="validate" placeholder="URL Imagem">' +
-		'<input id="categoriaId" type="number" class="validate" placeholder="Categoria">',
+		'<div id="categoria_div">',
 	  focusConfirm: false,
 	  preConfirm: () => {
 		ProdutoCreate();
@@ -84,14 +114,14 @@ function loadTable() {
 
 
   function showProdutoEditBox(id) {
-	console.log(id);
+	loadCategorias();
 	const xhttp = new XMLHttpRequest();
 	xhttp.open("GET", "https://localhost:7092/produtos/"+id);
 	xhttp.send();
 	xhttp.onreadystatechange = function() {
 	  if (this.readyState == 4 && this.status == 200) {
 		const objects = JSON.parse(this.responseText);
-		console.log(objects)
+		loadCategorias();
 		Swal.fire({
 		  title: 'Editar Produto',
 		  html:
@@ -100,10 +130,12 @@ function loadTable() {
 			'<input id="preco" type="number" class="validate" placeholder="Preço" value="'+objects['preco']+'">' +
 			'<input id="descricao" class="validate" placeholder="Descrição" value="'+objects['descricao']+'">' +
 			'<input id="url_imagem" class="validate" placeholder="URL Imagem" value="'+objects['url_imagem']+'">' +
-			'<input id="categoriaIdname" class="validate" placeholder="Categoiria" value="'+objects['categoria'].nome+'">' ,
+			'<div id="categoria_div">',
 		  focusConfirm: false,
 		  preConfirm: () => {
 			ProdutoEdit();
+			loadTable();
+
 		  }
 		})
 	  }
@@ -116,7 +148,7 @@ function loadTable() {
 	const preco = document.getElementById("preco").value;
 	const descricao = document.getElementById("descricao").value;
 	const url_imagem = document.getElementById("url_imagem").value;
-	const categoriaId = 3;
+	const categoriaId =  document.getElementById("categoriaId").value;
 	
 	const xhttp = new XMLHttpRequest();
 	xhttp.open("PUT", "https://localhost:7092/produtos/"+id);
